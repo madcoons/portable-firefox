@@ -1,0 +1,60 @@
+FROM debian:12-slim as firefox
+
+RUN apt-get update -y && apt-get install -y wget bzip2
+
+RUN mkdir /firefox
+
+RUN wget "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US" -O "/firefox/firefox.tar.bz2"
+
+RUN mkdir /firefox/portable
+RUN tar -xvf "/firefox/firefox.tar.bz2" -C /firefox/portable
+
+
+FROM debian:12-slim as firefox-portable
+
+RUN apt-get update -y && apt-get install -y libgtk-3-0 libasound2 libdbus-glib-1-2 libx11-xcb1
+
+COPY --from=firefox /firefox/portable/firefox /firefox-app
+COPY firefox /
+
+WORKDIR /firefox-app
+
+# RUN ls -l . && exit 1
+
+# RUN ./firefox --headless --version && exit 1
+# RUN ./firefox -screenshot https://developer.mozilla.com && exit 1
+
+FROM debian:12-slim
+
+COPY --from=firefox-portable / /firefox-root
+
+# Remove unused dirs
+RUN rm -rf \
+    /firefox-root/boot \
+    /firefox-root/dev \
+    /firefox-root/home \
+    /firefox-root/media \
+    /firefox-root/mnt \
+    /firefox-root/opt \
+    /firefox-root/proc \
+    /firefox-root/srv \
+    /firefox-root/sys \
+    /firefox-root/tmp \
+    /firefox-root/root \
+    /firefox-root/run \
+    /firefox-root/var
+
+# RUN cat /firefox-root/firefox-app/application.ini && exit 1
+# RUN ls -l /firefox-root/firefox-app && exit 1
+
+# Check size
+# RUN du -sh -- /firefox-root/*  | sort -rh && exit 1
+
+# RUN /firefox-root/firefox --version && eixt 1
+
+RUN tar -czvf /firefox.tar.gz /firefox-root
+
+# Check tar.gz size
+# RUN du -sh -- /firefox.tar.gz && exit 1
+
+ENTRYPOINT ["/firefox-root/firefox"]

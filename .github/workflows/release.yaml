@@ -1,0 +1,31 @@
+name: Release
+on:
+#   schedule:
+#     - cron: "5 */12 * * *"
+  push:
+    branches:
+      - "main"
+jobs:
+    Release:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3.5.3
+
+        - name: Test
+          run: |
+            set -e
+
+            docker build . -f Dockerfile.BuildLinux -t firefox-linux:latest
+            VERSION=$(docker run --rm -it portable-firefox:latest --version)
+            export VERSION_NUMBER=$(echo ${VERSION} | sed 's/Mozilla Firefox //g' | sed 's/\r//')
+            docker create --name firefox-linux firefox-linux:latest
+            docker cp firefox-linux:/firefox.tar.gz firefox-linux64-${VERSION_NUMBER}.tar.gz
+
+        - uses: "marvinpinto/action-automatic-releases@latest"
+          with:
+            title: Firefox linux64 ${{ env.VERSION_NUMBER }}
+            repo_token: "${{ secrets.GITHUB_TOKEN }}"
+            prerelease: false
+            draft: false 
+            files: |
+              firefox-linux64-${{ env.VERSION_NUMBER }}.tar.gz
