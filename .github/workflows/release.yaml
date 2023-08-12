@@ -15,11 +15,11 @@ jobs:
           run: |
             set -e
 
-            docker build . -f Dockerfile.BuildLinux -t firefox-linux:latest
+            docker build . -f Dockerfile.BuildLinux -t portable-linux:latest
             VERSION=$(docker run --rm portable-firefox:latest --version)
             export VERSION_NUMBER=$(echo ${VERSION} | sed 's/Mozilla Firefox //g' | sed 's/\r//')
-            docker create --name firefox-linux firefox-linux:latest
-            docker cp firefox-linux:/firefox.tar.gz firefox-linux64-${VERSION_NUMBER}.tar.gz
+            docker create --name portable-linux portable-linux:latest
+            docker cp portable-linux:/firefox.tar.gz portable-linux64-${VERSION_NUMBER}.tar.gz
 
         - uses: "marvinpinto/action-automatic-releases@latest"
           with:
@@ -28,4 +28,4 @@ jobs:
             prerelease: false
             draft: false 
             files: |
-              firefox-linux64-${{ env.VERSION_NUMBER }}.tar.gz
+              portable-linux64-${{ env.VERSION_NUMBER }}.tar.gz
