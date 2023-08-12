@@ -17,15 +17,17 @@ jobs:
 
             docker build . -f Dockerfile.BuildLinux -t portable-firefox:latest
             VERSION=$(docker run --rm portable-firefox:latest --version)
-            export VERSION_NUMBER=$(echo ${VERSION} | sed 's/Mozilla Firefox //g' | sed 's/\r//')
+            VERSION_NUMBER=$(echo ${VERSION} | sed 's/Mozilla Firefox //g' | sed 's/\r//')
             docker create --name portable-firefox portable-firefox:latest
             docker cp portable-firefox:/firefox.tar.gz portable-firefox-linux64-${VERSION_NUMBER}.tar.gz
+            echo "VERSION_NUMBER=${VERSION_NUMBER}" >> $GITHUB_ENV
 
         - uses: "marvinpinto/action-automatic-releases@latest"
           with:
             title: Firefox linux64 ${{ env.VERSION_NUMBER }}
-            repo_token: "${{ secrets.GITHUB_TOKEN }}"
+            automatic_release_tag: linux64-${{ env.VERSION_NUMBER }}
             prerelease: false
             draft: false 
             files: |
               portable-firefox-linux64-${{ env.VERSION_NUMBER }}.tar.gz
+            repo_token: "${{ secrets.GITHUB_TOKEN }}"
