@@ -11,7 +11,7 @@ jobs:
         steps:
         - uses: actions/checkout@v3.5.3
 
-        - name: Build archive
+        - name: Build linux64 archive
           run: |
             set -e
 
@@ -24,8 +24,8 @@ jobs:
 
         - uses: "marvinpinto/action-automatic-releases@latest"
           with:
-            title: Firefox linux64 ${{ env.VERSION_NUMBER }}
-            automatic_release_tag: linux64-${{ env.VERSION_NUMBER }}
+            title: Firefox v${{ env.VERSION_NUMBER }}
+            automatic_release_tag: v${{ env.VERSION_NUMBER }}
             prerelease: false
             draft: false 
             files: |
