@@ -47,6 +47,6 @@ jobs:
           working-directory: packages/nuget/PortableFirefox
           run: dotnet pack PortableFirefox --configuration Release
 
-        - name: Publish
+        - name: Publish nuget
           working-directory: packages/nuget/PortableFirefox
           run: dotnet nuget push PortableFirefox/bin/Release/PortableFirefox.*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://www.nuget.org --skip-duplicate
