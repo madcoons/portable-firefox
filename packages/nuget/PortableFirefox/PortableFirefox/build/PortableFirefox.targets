@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <FirefoxCache>$(MSBuildThisFileDirectory)../.cache/</FirefoxCache>
+    </PropertyGroup>
+    <Target Name="CleanPortableFirefox" BeforeTargets="BeforeClean">
+        <RemoveDir
+                Directories="$(OutDir)portable-firefox-$(FirefoxVersion)"
+                Condition="Exists('$(OutDir)portable-firefox-$(FirefoxVersion)')"
+        />
+    </Target>
+    <Target Name="DownloadFirefoxInBuild" AfterTargets="AfterBuild" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <MakeDir Directories="$(FirefoxCache)" Condition="!Exists('$(FirefoxCache)')"/>
+        <MakeDir Directories="$(OutDir)portable-firefox-$(FirefoxVersion)" Condition="!Exists('$(OutDir)portable-firefox-$(FirefoxVersion)')"/>
+        <DownloadFile
+                SourceUrl="https://github.com/madcoons/portable-firefox/releases/download/v$(FirefoxVersion)/portable-firefox-linux64-$(FirefoxVersion).tar.gz"
+                DestinationFolder="$(FirefoxCache)"
+                DestinationFileName="portable-firefox-linux64.tar.gz">
+        </DownloadFile>
+        <Exec Command="tar -xvf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(OutDir)portable-firefox-$(FirefoxVersion)'" Condition="!Exists('$(OutDir)portable-firefox-$(FirefoxVersion)/firefox-root')"/>
+    </Target>
+
+    <Target Name="DownloadFirefoxInPublish" AfterTargets="AfterPublish" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <MakeDir Directories="$(FirefoxCache)" Condition="!Exists('$(FirefoxCache)')"/>
+        <MakeDir Directories="$(PublishDir)portable-firefox-$(FirefoxVersion)" Condition="!Exists('$(PublishDir)portable-firefox-$(FirefoxVersion)')"/>
+        <DownloadFile
+                SourceUrl="https://github.com/madcoons/portable-firefox/releases/download/v$(FirefoxVersion)/portable-firefox-linux64-$(FirefoxVersion).tar.gz"
+                DestinationFolder="$(FirefoxCache)"
+                DestinationFileName="portable-firefox-linux64.tar.gz">
+        </DownloadFile>
+        <Exec Command="tar -xvf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(PublishDir)portable-firefox-$(FirefoxVersion)'" Condition="!Exists('$(PublishDir)portable-firefox-$(FirefoxVersion)/firefox-root')"/>
+    </Target>
+</Project>
