@@ -16,11 +16,11 @@ FROM debian:12-slim as firefox-portable
 RUN apt-get update -y && apt-get install -y libgtk-3-0 libasound2 libdbus-glib-1-2 libx11-xcb1
 
 COPY --from=firefox /firefox/portable/firefox /firefox-app
-COPY firefox /
+COPY firefox.run /firefox-app/firefox.run 
 
 # Ensure firefox is working
 # RUN ./firefox --headless --version && exit 1
-RUN /firefox -screenshot https://developer.mozilla.com
+RUN /firefox-app/firefox.run -screenshot https://developer.mozilla.com
 
 ###################################################################
 FROM debian:12-slim as with-patched-elf
@@ -46,8 +46,8 @@ COPY --from=firefox-portable / /firefox-root
 # RUN readelf -l /firefox-root/firefox-app/firefox && exit 1
 
 ##################################################################
-FROM debian:12-slim
-# FROM ubuntu:22.04
+# FROM debian:12-slim
+FROM ubuntu:22.04
 
 COPY --from=firefox-portable / /firefox-root
 
@@ -76,11 +76,11 @@ RUN rm -rf \
 # RUN ls -l /firefox-root/lib/x86_64-linux-gnu/ && exit 1
 
 # Ensure firefox is working from random dir
-RUN /firefox-root/firefox -screenshot https://developer.mozilla.com
+RUN /firefox-root/firefox-app/firefox.run -screenshot https://developer.mozilla.com
 
 RUN tar -czvf /firefox.tar.gz /firefox-root
 
 # Check tar.gz size
 # RUN du -sh -- /firefox.tar.gz && exit 1
 
-ENTRYPOINT ["/firefox-root/firefox"]
+ENTRYPOINT ["/firefox-root/firefox-app/firefox.run"]
