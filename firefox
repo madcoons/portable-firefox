@@ -2,6 +2,8 @@
 
 APPDIR=$(dirname "$0")
 
-export PATH="${APPDIR}/usr/bin:${PATH}"
+export PATH="${APPDIR}/usr/bin"
+export LD_LIBRARY_PATH="${APPDIR}/lib/x86_64-linux-gnu"
+export FONTCONFIG_FILE="${APPDIR}/etc/fonts/fonts.conf"
 
-exec "${APPDIR}/firefox-app/ld-linux-x86-64.so.2" --inhibit-cache --library-path "${APPDIR}/lib/x86_64-linux-gnu" "${APPDIR}/firefox-app/firefox-bin" "$@"
+exec "${APPDIR}/firefox-app/firefox" "$@"

@@ -9,32 +9,35 @@ RUN wget "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&la
 RUN mkdir /firefox/portable
 RUN tar -xvf "/firefox/firefox.tar.bz2" -C /firefox/portable
 
-
+##################################################################
 FROM debian:12-slim as firefox-portable
 
-RUN apt-get update -y && apt-get install -y libgtk-3-0 libasound2 libdbus-glib-1-2 libx11-xcb1 file
+RUN apt-get update -y && apt-get install -y libgtk-3-0 libasound2 libdbus-glib-1-2 libx11-xcb1
 
 COPY --from=firefox /firefox/portable/firefox /firefox-app
 COPY firefox /
-# XPCOM looks for dependentlibs.list in directory where executable is, so if we run it through ld, it needs to be in firefox directory
-RUN cp /lib64/ld-linux-x86-64.so.2 /firefox-app/ld-linux-x86-64.so.2
-
-WORKDIR /firefox-app
 
 # RUN ls -l . && exit 1
 
+# Ensure firefox is working
 # RUN ./firefox --headless --version && exit 1
-# RUN ./firefox -screenshot https://developer.mozilla.com && exit 1
+RUN /firefox -screenshot https://developer.mozilla.com
 
-# Ensure firefox is loading
-# RUN apt-get install -y strace
-# RUN strace -v -s 1024 /firefox-app/ld-linux-x86-64.so.2 --inhibit-cache --library-path '/lib/x86_64-linux-gnu' "/firefox-app/firefox-bin" --version
-RUN /firefox-app/ld-linux-x86-64.so.2 --inhibit-cache --library-path '/lib/x86_64-linux-gnu' "/firefox-app/firefox-bin" --version > /dev/null
+###################################################################
+FROM debian:12-slim as with-patched-elf
 
+COPY --from=firefox-portable / /firefox-root
+
+RUN apt-get update -y && apt-get install -y strace patchelf binutils
+
+RUN patchelf --set-interpreter ../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /firefox-root/firefox-app/firefox
+# RUN readelf -l /firefox-root/firefox-app/firefox && exit 1
+
+##################################################################
 FROM debian:12-slim
 # FROM ubuntu:22.04
 
-COPY --from=firefox-portable / /firefox-root
+COPY --from=with-patched-elf /firefox-root /firefox-root
 
 # Remove unused dirs
 RUN rm -rf \
@@ -58,10 +61,12 @@ RUN rm -rf \
 # RUN du -sh -- /firefox-root/*  | sort -rh && exit 1
 
 
-# RUN ls -l /firefox-root/firefox-app/ && exit 1
+# RUN ls -l /firefox-root/lib/x86_64-linux-gnu/ && exit 1
 
-# Ensure firefox is loading
-RUN /firefox-root/firefox --version > /dev/null
+# Ensure firefox is working
+# ENV LD_LIBRARY_PATH=/firefox-root/lib/x86_64-linux-gnu
+# RUN /firefox-root/firefox --version
+RUN /firefox-root/firefox -screenshot https://developer.mozilla.com
 
 RUN tar -czvf /firefox.tar.gz /firefox-root
 
