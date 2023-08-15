@@ -11,13 +11,12 @@ RUN tar -xvf "/firefox/firefox.tar.bz2" -C /firefox/portable
 
 ##################################################################
 FROM debian:12-slim as firefox-portable
+# FROM ubuntu:22.04 as firefox-portable
 
 RUN apt-get update -y && apt-get install -y libgtk-3-0 libasound2 libdbus-glib-1-2 libx11-xcb1
 
 COPY --from=firefox /firefox/portable/firefox /firefox-app
 COPY firefox /
-
-# RUN ls -l . && exit 1
 
 # Ensure firefox is working
 # RUN ./firefox --headless --version && exit 1
@@ -25,22 +24,32 @@ RUN /firefox -screenshot https://developer.mozilla.com
 
 ###################################################################
 FROM debian:12-slim as with-patched-elf
+# FROM ubuntu:22.04 as with-patched-elf
 
 COPY --from=firefox-portable / /firefox-root
 
-RUN apt-get update -y && apt-get install -y strace patchelf binutils
+# RUN apt-get update -y && apt-get install -y strace patchelf binutils
 
-RUN patchelf --set-interpreter 'lib/x86_64-linux-gnu/ld-linux-x86-64.so.2' /firefox-root/firefox-app/firefox
+# RUN LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/firefox-root/lib/x86_64-linux-gnu /firefox-root/firefox-app/firefox -screenshot https://developer.mozilla.com && exit 1
+
+# RUN patchelf --set-interpreter '/firefox-root/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2' /firefox-root/firefox-app/firefox
+# RUN patchelf --set-interpreter '/firefox-root/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2' /firefox-root/bin/strace
+# RUN cat /firefox-root/bin/ldd && exit 1
+# RUN /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 --version && exit 1
+# RUN LD_TRACE_LOADED_OBJECTS=1 LD_LIBRARY_VERSION=2.35 LD_VERBOSE=yes LD_LIBRARY_PATH=/firefox-root/lib/x86_64-linux-gnu /firefox-root/bin/strace && exit 1
+# RUN readelf -d /firefox-root/firefox-app/firefox | head -40 && exit 1
+# RUN /firefox-root/bin/ldd -v /firefox-root/firefox-app/firefox && exit 1
+# RUN LD_LIBRARY_VERSION=2.36 LD_LIBRARY_PATH=/firefox-root/lib/x86_64-linux-gnu /firefox-root/bin/strace -v -s 1024 /firefox-root/firefox-app/firefox -screenshot https://developer.mozilla.com && exit 1
 # RUN patchelf --set-rpath '$ORIGIN/../lib/x86_64-linux-gnu' /firefox-root/firefox-app/firefox
 # RUN ldd /firefox-root/firefox-app/firefox && exit 1
-# RUN patchelf --set-interpreter /firefox-root/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /firefox-root/firefox-app/firefox-bin
+# RUN patchelf --set-interpreter '/firefox-root/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2' /firefox-root/firefox-app/firefox-bin
 # RUN readelf -l /firefox-root/firefox-app/firefox && exit 1
 
 ##################################################################
 FROM debian:12-slim
 # FROM ubuntu:22.04
 
-COPY --from=with-patched-elf /firefox-root /firefox-root
+COPY --from=firefox-portable / /firefox-root
 
 # Remove unused dirs
 RUN rm -rf \
@@ -67,7 +76,7 @@ RUN rm -rf \
 # RUN ls -l /firefox-root/lib/x86_64-linux-gnu/ && exit 1
 
 # Ensure firefox is working from random dir
-RUN mkdir -p /some/random/dir && cd /some/random/dir && /firefox-root/firefox -screenshot https://developer.mozilla.com
+RUN /firefox-root/firefox -screenshot https://developer.mozilla.com
 
 RUN tar -czvf /firefox.tar.gz /firefox-root
 
