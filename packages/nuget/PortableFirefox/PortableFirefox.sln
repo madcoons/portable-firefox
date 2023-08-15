@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortableFirefox", "PortableFirefox\PortableFirefox.csproj", "{BAEBFFAB-C4C0-4252-A4D0-D6FE9C7EC813}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortableFirefox.Test", "PortableFirefox.Test\PortableFirefox.Test.csproj", "{173F4497-7271-402B-A076-1E07FDA2A166}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{BAEBFFAB-C4C0-4252-A4D0-D6FE9C7EC813}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAEBFFAB-C4C0-4252-A4D0-D6FE9C7EC813}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAEBFFAB-C4C0-4252-A4D0-D6FE9C7EC813}.Release|Any CPU.Build.0 = Release|Any CPU
+		{173F4497-7271-402B-A076-1E07FDA2A166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{173F4497-7271-402B-A076-1E07FDA2A166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{173F4497-7271-402B-A076-1E07FDA2A166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{173F4497-7271-402B-A076-1E07FDA2A166}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
