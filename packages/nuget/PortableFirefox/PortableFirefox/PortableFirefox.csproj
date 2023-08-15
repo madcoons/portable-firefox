@@ -10,7 +10,7 @@
 
     <PropertyGroup>
         <PackageId>PortableFirefox</PackageId>
-        <Version>0.1.1</Version>
+        <Version>0.1.2</Version>
         <Authors>MyDesignsDevs</Authors>
         <Company>MyDesigns</Company>
         <RepositoryUrl>https://github.com/madcoons/portable-firefox.git</RepositoryUrl>

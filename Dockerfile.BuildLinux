@@ -12,10 +12,12 @@ RUN tar -xvf "/firefox/firefox.tar.bz2" -C /firefox/portable
 
 FROM debian:12-slim as firefox-portable
 
-RUN apt-get update -y && apt-get install -y libgtk-3-0 libasound2 libdbus-glib-1-2 libx11-xcb1
+RUN apt-get update -y && apt-get install -y libgtk-3-0 libasound2 libdbus-glib-1-2 libx11-xcb1 file
 
 COPY --from=firefox /firefox/portable/firefox /firefox-app
 COPY firefox /
+# XPCOM looks for dependentlibs.list in directory where executable is, so if we run it through ld, it needs to be in firefox directory
+RUN cp /lib64/ld-linux-x86-64.so.2 /firefox-app/ld-linux-x86-64.so.2
 
 WORKDIR /firefox-app
 
@@ -24,7 +26,13 @@ WORKDIR /firefox-app
 # RUN ./firefox --headless --version && exit 1
 # RUN ./firefox -screenshot https://developer.mozilla.com && exit 1
 
+# Ensure firefox is loading
+# RUN apt-get install -y strace
+# RUN strace -v -s 1024 /firefox-app/ld-linux-x86-64.so.2 --inhibit-cache --library-path '/lib/x86_64-linux-gnu' "/firefox-app/firefox-bin" --version
+RUN /firefox-app/ld-linux-x86-64.so.2 --inhibit-cache --library-path '/lib/x86_64-linux-gnu' "/firefox-app/firefox-bin" --version > /dev/null
+
 FROM debian:12-slim
+# FROM ubuntu:22.04
 
 COPY --from=firefox-portable / /firefox-root
 
@@ -44,13 +52,16 @@ RUN rm -rf \
     /firefox-root/run \
     /firefox-root/var
 
-# RUN cat /firefox-root/firefox-app/application.ini && exit 1
 # RUN ls -l /firefox-root/firefox-app && exit 1
 
 # Check size
 # RUN du -sh -- /firefox-root/*  | sort -rh && exit 1
 
-# RUN /firefox-root/firefox --version && eixt 1
+
+# RUN ls -l /firefox-root/firefox-app/ && exit 1
+
+# Ensure firefox is loading
+RUN /firefox-root/firefox --version > /dev/null
 
 RUN tar -czvf /firefox.tar.gz /firefox-root
 
