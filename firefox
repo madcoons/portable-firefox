@@ -4,5 +4,6 @@ APPDIR=$(dirname "$0")
 
 export PATH="${APPDIR}/usr/bin"
 export LD_LIBRARY_PATH="/lib/x86_64-linux-gnu:${APPDIR}/lib/x86_64-linux-gnu"
+export FONTCONFIG_FILE="${APPDIR}/etc/fonts/fonts.conf"
 
 exec "${APPDIR}/firefox-app/firefox" "$@"
