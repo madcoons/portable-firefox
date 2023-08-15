@@ -30,7 +30,10 @@ COPY --from=firefox-portable / /firefox-root
 
 RUN apt-get update -y && apt-get install -y strace patchelf binutils
 
-RUN patchelf --set-interpreter ../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /firefox-root/firefox-app/firefox
+RUN patchelf --set-interpreter 'lib/x86_64-linux-gnu/ld-linux-x86-64.so.2' /firefox-root/firefox-app/firefox
+# RUN patchelf --set-rpath '$ORIGIN/../lib/x86_64-linux-gnu' /firefox-root/firefox-app/firefox
+# RUN ldd /firefox-root/firefox-app/firefox && exit 1
+# RUN patchelf --set-interpreter /firefox-root/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /firefox-root/firefox-app/firefox-bin
 # RUN readelf -l /firefox-root/firefox-app/firefox && exit 1
 
 ##################################################################
@@ -63,10 +66,8 @@ RUN rm -rf \
 
 # RUN ls -l /firefox-root/lib/x86_64-linux-gnu/ && exit 1
 
-# Ensure firefox is working
-# ENV LD_LIBRARY_PATH=/firefox-root/lib/x86_64-linux-gnu
-# RUN /firefox-root/firefox --version
-RUN /firefox-root/firefox -screenshot https://developer.mozilla.com
+# Ensure firefox is working from random dir
+RUN mkdir -p /some/random/dir && cd /some/random/dir && /firefox-root/firefox -screenshot https://developer.mozilla.com
 
 RUN tar -czvf /firefox.tar.gz /firefox-root
 
