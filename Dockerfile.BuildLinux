@@ -5,9 +5,11 @@ RUN apt-get update -y && apt-get install -y wget bzip2
 RUN mkdir /firefox
 
 RUN wget "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US" -O "/firefox/firefox.tar.bz2"
+RUN wget "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz" -O "/firefox/geckodriver-linux64.tar.gz"
 
 RUN mkdir /firefox/portable
 RUN tar -xvf "/firefox/firefox.tar.bz2" -C /firefox/portable
+RUN tar -xvf "/firefox/geckodriver-linux64.tar.gz" -C /firefox/portable/firefox
 
 ##################################################################
 FROM debian:12-slim as firefox-portable
