@@ -3,7 +3,12 @@
 APPDIR=$(dirname "$0")
 
 export PATH="${APPDIR}/../usr/bin"
-export LD_LIBRARY_PATH="/lib/x86_64-linux-gnu:${APPDIR}/../lib/x86_64-linux-gnu"
+export LD_LIBRARY_PATH="${APPDIR}/../lib/x86_64-linux-gnu"
 export FONTCONFIG_FILE="${APPDIR}/../etc/fonts/fonts.conf"
 
-exec "${APPDIR}/firefox" "$@"
+# Glib/Gtk environment
+export GCONV_PATH="$APPDIR/../usr/lib/x86_64-linux-gnu/gconv"
+export GTK_EXE_PREFIX="$APPDIR/../usr"
+
+cd ${APPDIR}
+exec "./firefox" "$@"
