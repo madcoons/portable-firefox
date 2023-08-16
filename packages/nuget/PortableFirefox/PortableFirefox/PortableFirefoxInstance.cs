@@ -6,7 +6,7 @@ public partial class PortableFirefoxInstance
         "portable-firefox-" + VERSION,
         "firefox-root"), "firefox-app", "firefox.run");
     
-    public static string GeckoDriverPath => Path.Join(Path.Join(AppDomain.CurrentDomain.BaseDirectory,
+    public static string GeckoDriverDir => Path.Join(Path.Join(AppDomain.CurrentDomain.BaseDirectory,
         "portable-firefox-" + VERSION,
-        "firefox-root"), "firefox-app", "geckodriver");
+        "firefox-root"), "firefox-app");
 }
