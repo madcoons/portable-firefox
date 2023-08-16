@@ -3,13 +3,13 @@
     <PropertyGroup>
         <FirefoxCache>$(MSBuildThisFileDirectory)../.cache/</FirefoxCache>
     </PropertyGroup>
-    <Target Name="CleanPortableFirefox" BeforeTargets="BeforeClean">
+    <Target Name="CleanPortableFirefox" BeforeTargets="Clean">
         <RemoveDir
                 Directories="$(OutDir)portable-firefox-$(FirefoxVersion)"
                 Condition="Exists('$(OutDir)portable-firefox-$(FirefoxVersion)')"
         />
     </Target>
-    <Target Name="DownloadFirefoxInBuild" AfterTargets="AfterBuild" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+    <Target Name="DownloadFirefoxInBuild" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
         <MakeDir Directories="$(FirefoxCache)" Condition="!Exists('$(FirefoxCache)')"/>
         <MakeDir Directories="$(OutDir)portable-firefox-$(FirefoxVersion)" Condition="!Exists('$(OutDir)portable-firefox-$(FirefoxVersion)')"/>
         <DownloadFile
@@ -20,7 +20,7 @@
         <Exec Command="tar -xvf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(OutDir)portable-firefox-$(FirefoxVersion)'" Condition="!Exists('$(OutDir)portable-firefox-$(FirefoxVersion)/firefox-root')"/>
     </Target>
 
-    <Target Name="DownloadFirefoxInPublish" AfterTargets="AfterPublish" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+    <Target Name="DownloadFirefoxInPublish" AfterTargets="Publish" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
         <MakeDir Directories="$(FirefoxCache)" Condition="!Exists('$(FirefoxCache)')"/>
         <MakeDir Directories="$(PublishDir)portable-firefox-$(FirefoxVersion)" Condition="!Exists('$(PublishDir)portable-firefox-$(FirefoxVersion)')"/>
         <DownloadFile
