@@ -32,7 +32,7 @@ jobs:
           with: 
             tag: v${{ env.VERSION_NUMBER }}${{ env.VERSION_SUFFIX }}
 
-        - uses: "marvinpinto/action-automatic-releases@latest"
+        - uses: "marvinpinto/action-automatic-releases@v1.2.1"
           if: steps.checkReleaseExists.outputs.exists == 'false'
           with:
             title: Firefox v${{ env.VERSION_NUMBER }}${{ env.VERSION_SUFFIX }}
