@@ -31,7 +31,8 @@ jobs:
           id: checkReleaseExists
           with: 
             github_token: ${{ secrets.GITHUB_TOKEN }}
-            tag: v${{ env.VERSION_NUMBER }}${{ env.VERSION_SUFFIX }}
+            # tag: v${{ env.VERSION_NUMBER }}${{ env.VERSION_SUFFIX }}
+            tag: 'v116.0.301'
 
         - uses: "marvinpinto/action-automatic-releases@latest"
           if: ${{ steps.checkReleaseExists.outputs.exists }} == 'false'
