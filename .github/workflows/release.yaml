@@ -47,8 +47,15 @@ jobs:
           run: |
             set -e
             sed 's/$(FirefoxVersion)/${{ env.VERSION_NUMBER }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/PortableFirefox.csproj
-            sed 's/$(VersionSuffix)/${{ env.VERSION_SUFFIX }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/build/PortableFirefox.targets
+            sed 's/$(FirefoxVersion)/${{ env.VERSION_NUMBER }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/build/PortableFirefox.targets
 
+        - name: Replace VersionSuffix
+          if: ${{ steps.checkReleaseExists.outputs.exists }} == 'false'
+          run: |
+            set -e
+            sed 's/$(VersionSuffix)/${{ env.VERSION_SUFFIX }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/PortableFirefox.csproj
+            sed 's/$(VersionSuffix)/${{ env.VERSION_SUFFIX }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/build/PortableFirefox.targets
+    
         - name: Setup .NET
           if: ${{ steps.checkReleaseExists.outputs.exists }} == 'false'
           uses: actions/setup-dotnet@v3
