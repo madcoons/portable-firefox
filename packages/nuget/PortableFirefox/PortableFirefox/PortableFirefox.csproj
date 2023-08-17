@@ -6,11 +6,12 @@
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <FirefoxVersion Condition=" '$(Configuration)' == 'Debug' ">116.0.2</FirefoxVersion>
+        <VersionSuffix Condition=" '$(Configuration)' == 'Debug' ">-1</VersionSuffix>
     </PropertyGroup>
 
     <PropertyGroup>
         <PackageId>PortableFirefox</PackageId>
-        <Version>0.1.11</Version>
+        <Version>$(FirefoxVersion)$(VersionSuffix)</Version>
         <Authors>MyDesignsDevs</Authors>
         <Company>MyDesigns</Company>
         <RepositoryUrl>https://github.com/madcoons/portable-firefox.git</RepositoryUrl>
@@ -27,6 +28,7 @@ namespace PortableFirefox%3B
 public partial class PortableFirefoxInstance
 {
     public const string VERSION = "$(FirefoxVersion)"%3B
+    public const string VERSION_SUFFIX = "$(VersionSuffix)"%3B
 }
             </FirefoxVersionFile>
         </PropertyGroup>
@@ -44,6 +46,4 @@ public partial class PortableFirefoxInstance
         <None Include="build/PortableFirefox.targets" Pack="true" PackagePath="buildTransitive/" />
         <Compile Include="$(IntermediateOutputPath)PortableFirefoxInstance.Version.cs"/>
     </ItemGroup>
-
-    <Import Project="build/PortableFirefox.targets"/>
 </Project>
