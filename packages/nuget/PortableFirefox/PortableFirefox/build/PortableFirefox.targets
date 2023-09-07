@@ -17,7 +17,7 @@
                 DestinationFolder="$(FirefoxCache)"
                 DestinationFileName="portable-firefox-linux64.tar.gz">
         </DownloadFile>
-        <Exec Command="tar -xvf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)'" Condition="!Exists('$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)/firefox-root')"/>
+        <Exec Command="tar -xf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)'" Condition="!Exists('$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)/firefox-root')"/>
     </Target>
 
     <Target Name="DownloadFirefoxInPublish" AfterTargets="Publish" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
@@ -28,6 +28,6 @@
                 DestinationFolder="$(FirefoxCache)"
                 DestinationFileName="portable-firefox-linux64.tar.gz">
         </DownloadFile>
-        <Exec Command="tar -xvf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(PublishDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)'" Condition="!Exists('$(PublishDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)/firefox-root')"/>
+        <Exec Command="tar -xf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(PublishDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)'" Condition="!Exists('$(PublishDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)/firefox-root')"/>
     </Target>
 </Project>
