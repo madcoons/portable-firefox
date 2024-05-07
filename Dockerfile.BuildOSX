@@ -1,0 +1,40 @@
+FROM debian:12-slim as firefox
+
+RUN apt-get update -y && apt-get install -y wget bzip2 p7zip-full
+
+RUN mkdir /firefox
+
+RUN wget "https://download.mozilla.org/?product=firefox-latest-ssl&os=osx&lang=en-US" -O "/firefox/firefox.dmg"
+RUN wget "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-macos.tar.gz" -O "/firefox/geckodriver-macos.tar.gz"
+RUN wget "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-macos-aarch64.tar.gz" -O "/firefox/geckodriver-macos-aarch64.tar.gz"
+
+RUN 7z x /firefox/firefox.dmg -o/firefox
+RUN mkdir /firefox-root
+RUN cp -r /firefox/Firefox/Firefox.app /firefox-root/Firefox.app/
+
+
+RUN mkdir /firefox/geckodriver-cross-arch
+RUN tar -xvf "/firefox/geckodriver-macos.tar.gz" -C /firefox/geckodriver-cross-arch
+RUN mv /firefox/geckodriver-cross-arch/geckodriver /firefox/geckodriver-cross-arch/geckodriver-x86_64
+RUN tar -xvf "/firefox/geckodriver-macos-aarch64.tar.gz" -C /firefox/geckodriver-cross-arch
+RUN mv /firefox/geckodriver-cross-arch/geckodriver /firefox/geckodriver-cross-arch/geckodriver-aarch64
+
+# Download lipo https://github.com/konoui/lipo
+RUN bash <<'EOF'
+LIPO_EXECUTABLE=""
+if [ $(arch) == "x86_64" ]; then
+    LIPO_EXECUTABLE="lipo_linux_amd64"
+elif [ $(arch) == "aarch64" ]; then
+    LIPO_EXECUTABLE="lipo_linux_arm64"
+else
+    echo "arch ${arch} is not supported."
+    exit 1
+fi
+wget "https://github.com/konoui/lipo/releases/download/v0.8.8/${LIPO_EXECUTABLE}" -O "/bin/lipo"
+chmod +x /bin/lipo
+EOF
+
+RUN lipo -create -output /firefox/geckodriver-cross-arch/geckodriver /firefox/geckodriver-cross-arch/geckodriver-x86_64 /firefox/geckodriver-cross-arch/geckodriver-aarch64
+RUN cp /firefox/geckodriver-cross-arch/geckodriver /firefox-root/
+
+RUN tar -czvf /firefox.tar.gz /firefox-root
