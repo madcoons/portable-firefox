@@ -1,7 +1,12 @@
 #!/bin/sh
+set -e
 
-wget "https://download.mozilla.org/?product=firefox-latest-ssl&os=osx&lang=en-US" -O "firefox.dmg"
-wget "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-macos.tar.gz" -O "geckodriver-macos.tar.gz"
-wget "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-macos-aarch64.tar.gz" -O "geckodriver-macos-aarch64.tar.gz"
+rm -rf tmp
 
-ls -l .
+curl -L "https://download.mozilla.org/?product=firefox-latest-ssl&os=osx&lang=en-US" --create-dirs --output-dir tmp --output "firefox.dmg"
+curl -L "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-macos.tar.gz" --create-dirs --output-dir tmp --output "geckodriver-macos.tar.gz"
+curl -L "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-macos-aarch64.tar.gz" --create-dirs --output-dir tmp --output "geckodriver-macos-aarch64.tar.gz"
+
+hdiutil attach -mountpoint tmp/app-mount tmp/firefox.dmg
+trap 'hdiutil detach tmp/app-mount' EXIT
+tar -zcvf tmp/firefox.tar.gz tmp/app-mount
