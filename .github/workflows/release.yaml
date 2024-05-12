@@ -29,7 +29,7 @@ jobs:
         - uses: actions/checkout@v3.5.3
 
         - name: Generate version suffix
-          run: echo "VERSION_SUFFIX=.6" >> $GITHUB_ENV
+          run: echo "VERSION_SUFFIX=.7" >> $GITHUB_ENV
 
         - name: Build archives
           run: |

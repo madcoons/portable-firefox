@@ -5,8 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-        <FirefoxVersion Condition=" '$(Configuration)' == 'Debug' ">116.0.2</FirefoxVersion>
-        <VersionSuffix Condition=" '$(Configuration)' == 'Debug' ">-1</VersionSuffix>
+        <FirefoxVersion Condition=" '$(Configuration)' == 'Debug' ">125.0.3</FirefoxVersion>
+        <VersionSuffix Condition=" '$(Configuration)' == 'Debug' ">.6</VersionSuffix>
     </PropertyGroup>
 
     <PropertyGroup>
