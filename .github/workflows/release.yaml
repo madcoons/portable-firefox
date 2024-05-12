@@ -41,9 +41,14 @@ jobs:
             docker create --name portable-firefox-linux64 portable-firefox-linux64:latest
             docker cp portable-firefox-linux64:/firefox.tar.gz portable-firefox-linux64-${VERSION_NUMBER}.tar.gz
 
-            docker build . -f Dockerfile.BuildOSX -t portable-firefox-macos:latest
-            docker create --name portable-firefox-macos portable-firefox-macos:latest
-            docker cp portable-firefox-macos:/firefox.tar.gz portable-firefox-macos-${VERSION_NUMBER}.tar.gz
+            # docker build . -f Dockerfile.BuildOSX -t portable-firefox-macos:latest
+            # docker create --name portable-firefox-macos portable-firefox-macos:latest
+            # docker cp portable-firefox-macos:/firefox.tar.gz portable-firefox-macos-${VERSION_NUMBER}.tar.gz
+
+        - uses: actions/download-artifact@v4
+          with:
+            name: portable-firefox-macos
+            path: portable-firefox-macos-${{ env.VERSION_NUMBER }}.tar.gz
 
         - uses: mukunku/tag-exists-action@v1.3.0
           id: checkReleaseExists
