@@ -21,6 +21,8 @@ jobs:
             name: portable-firefox-macos
             path: tmp/firefox.tar.gz
     Release:
+        needs:
+        - Archive-OSX
         runs-on: ubuntu-latest
         concurrency: release
         steps:
