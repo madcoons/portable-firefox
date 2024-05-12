@@ -14,6 +14,12 @@ jobs:
 
         - name: Build Archive
           run: ./BuildOSX.sh
+
+        - name: Upload Artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: portable-firefox-macos
+            path: tmp/firefox.tar.gz
     Release:
         runs-on: ubuntu-latest
         concurrency: release
