@@ -29,7 +29,7 @@ jobs:
         - uses: actions/checkout@v3.5.3
 
         - name: Generate version suffix
-          run: echo "VERSION_SUFFIX=.5" >> $GITHUB_ENV
+          run: echo "VERSION_SUFFIX=.6" >> $GITHUB_ENV
 
         - name: Build archives
           run: |
@@ -46,7 +46,10 @@ jobs:
         - uses: actions/download-artifact@v4
           with:
             name: portable-firefox-macos
-            path: portable-firefox-macos-${{ env.VERSION_NUMBER }}.tar.gz
+            path: portable-firefox-macos
+
+        - name: Rename firefox.tar.gz with version
+          run: mv portable-firefox-macos/firefox.tar.gz portable-firefox-macos-${{ env.VERSION_NUMBER }}.tar.gz
 
         - uses: mukunku/tag-exists-action@v1.3.0
           id: checkReleaseExists
