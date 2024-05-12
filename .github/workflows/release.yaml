@@ -10,6 +10,8 @@ jobs:
     Archive-OSX:
         runs-on: macos-latest
         steps:
+        - uses: actions/checkout@v3.5.3
+
         - name: Build Archive
           run: ./BuildOSX.sh
     Release:
