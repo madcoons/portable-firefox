@@ -29,7 +29,7 @@ jobs:
         - uses: actions/checkout@v3.5.3
 
         - name: Generate version suffix
-          run: echo "VERSION_SUFFIX=.4" >> $GITHUB_ENV
+          run: echo "VERSION_SUFFIX=.5" >> $GITHUB_ENV
 
         - name: Build archives
           run: |
@@ -42,10 +42,6 @@ jobs:
 
             docker create --name portable-firefox-linux64 portable-firefox-linux64:latest
             docker cp portable-firefox-linux64:/firefox.tar.gz portable-firefox-linux64-${VERSION_NUMBER}.tar.gz
-
-            # docker build . -f Dockerfile.BuildOSX -t portable-firefox-macos:latest
-            # docker create --name portable-firefox-macos portable-firefox-macos:latest
-            # docker cp portable-firefox-macos:/firefox.tar.gz portable-firefox-macos-${VERSION_NUMBER}.tar.gz
 
         - uses: actions/download-artifact@v4
           with:
