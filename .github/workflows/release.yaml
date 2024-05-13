@@ -7,7 +7,24 @@ on:
       - "main"
   workflow_dispatch:
 jobs:
+    GetLatestVersions:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3.5.3
+    
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: '8.x'
+    
+        - name: Run Version Manager
+          run: dotnet run -c Release packages/nuget/PortableFirefox/PortableFirefox.VersionManager
+          env:
+            PATCH_VERSION_SUFFIX: '12'
+
     Archive-OSX:
+        needs:
+        - GetLatestVersions
         runs-on: macos-latest
         steps:
         - uses: actions/checkout@v3.5.3
@@ -20,6 +37,7 @@ jobs:
           with:
             name: portable-firefox-macos
             path: tmp/firefox.tar.gz
+
     Release:
         needs:
         - Archive-OSX

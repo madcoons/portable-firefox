@@ -6,13 +6,12 @@
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <FirefoxVersion Condition=" '$(Configuration)' == 'Debug' ">125.0.3</FirefoxVersion>
-        <VersionSuffix Condition=" '$(Configuration)' == 'Debug' ">.6</VersionSuffix>
     </PropertyGroup>
 
     <PropertyGroup>
         <PackageId>PortableFirefox</PackageId>
-        <Version>$(FirefoxVersion)$(VersionSuffix)</Version>
-        <Authors>MyDesignsDevs</Authors>
+        <Version Condition=" '$(Configuration)' == 'Debug' ">125.0.306</Version>
+        <Authors>MyDesigns Devs</Authors>
         <Company>MyDesigns</Company>
         <RepositoryUrl>https://github.com/madcoons/portable-firefox.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -28,8 +27,8 @@ namespace PortableFirefox%3B
 
 public partial class PortableFirefoxInstance
 {
-    public const string VERSION = "$(FirefoxVersion)"%3B
-    public const string VERSION_SUFFIX = "$(VersionSuffix)"%3B
+    public const string FIREFOX_VERSION = "$(FirefoxVersion)"%3B
+    public const string NUGET_PACKAGE_VERSION = "$(Version)"%3B
 }
             </FirefoxVersionFile>
         </PropertyGroup>

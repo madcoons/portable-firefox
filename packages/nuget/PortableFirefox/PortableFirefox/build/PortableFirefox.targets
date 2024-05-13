@@ -5,57 +5,57 @@
     </PropertyGroup>
     <Target Name="CleanPortableFirefox" BeforeTargets="Clean">
         <RemoveDir
-                Directories="$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)"
-                Condition="Exists('$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)')"
+                Directories="$(OutDir)portable-firefox-$(Version)"
+                Condition="Exists('$(OutDir)portable-firefox-$(Version)')"
         />
     </Target>
     <Target Name="DownloadFirefoxInBuild" AfterTargets="Build">
         <MakeDir Directories="$(FirefoxCache)" Condition="!Exists('$(FirefoxCache)')"/>
-        <MakeDir Directories="$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)" Condition="!Exists('$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)')"/>
+        <MakeDir Directories="$(OutDir)portable-firefox-$(Version)" Condition="!Exists('$(OutDir)portable-firefox-$(Version)')"/>
         <!-- Linux64-->
         <DownloadFile
                 Condition="$([MSBuild]::IsOSPlatform('Linux'))"
-                SourceUrl="https://github.com/madcoons/portable-firefox/releases/download/v$(FirefoxVersion)$(VersionSuffix)/portable-firefox-linux64-$(FirefoxVersion).tar.gz"
+                SourceUrl="https://github.com/madcoons/portable-firefox/releases/download/v$(Version)/portable-firefox-linux64-$(FirefoxVersion).tar.gz"
                 DestinationFolder="$(FirefoxCache)"
                 DestinationFileName="portable-firefox-linux64.tar.gz">
         </DownloadFile>
         <Exec
-                Command="tar -xf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)'"
-                Condition="$([MSBuild]::IsOSPlatform('Linux')) And !Exists('$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)/firefox-root')"/>
+                Command="tar -xf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(OutDir)portable-firefox-$(Version)'"
+                Condition="$([MSBuild]::IsOSPlatform('Linux')) And !Exists('$(OutDir)portable-firefox-$(Version)/firefox-root')"/>
         <!-- MacOS-->
         <DownloadFile
                 Condition="$([MSBuild]::IsOSPlatform('OSX'))"
-                SourceUrl="https://github.com/madcoons/portable-firefox/releases/download/v$(FirefoxVersion)$(VersionSuffix)/portable-firefox-macos-$(FirefoxVersion).tar.gz"
+                SourceUrl="https://github.com/madcoons/portable-firefox/releases/download/v$(Version)/portable-firefox-macos-$(FirefoxVersion).tar.gz"
                 DestinationFolder="$(FirefoxCache)"
                 DestinationFileName="portable-firefox-macos.tar.gz">
         </DownloadFile>
         <Exec
-                Command="tar -xf '$(FirefoxCache)portable-firefox-macos.tar.gz' -C '$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)'"
-                Condition="$([MSBuild]::IsOSPlatform('OSX')) And !Exists('$(OutDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)/Firefox.app')"/>
+                Command="tar -xf '$(FirefoxCache)portable-firefox-macos.tar.gz' -C '$(OutDir)portable-firefox-$(Version)'"
+                Condition="$([MSBuild]::IsOSPlatform('OSX')) And !Exists('$(OutDir)portable-firefox-$(Version)/Firefox.app')"/>
     </Target>
 
     <Target Name="DownloadFirefoxInPublish" AfterTargets="Publish">
         <MakeDir Directories="$(FirefoxCache)" Condition="!Exists('$(FirefoxCache)')"/>
-        <MakeDir Directories="$(PublishDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)" Condition="!Exists('$(PublishDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)')"/>
+        <MakeDir Directories="$(PublishDir)portable-firefox-$(Version)" Condition="!Exists('$(PublishDir)portable-firefox-$(Version)')"/>
         <!-- Linux64-->
         <DownloadFile
                 Condition="$([MSBuild]::IsOSPlatform('Linux'))"
-                SourceUrl="https://github.com/madcoons/portable-firefox/releases/download/v$(FirefoxVersion)$(VersionSuffix)/portable-firefox-linux64-$(FirefoxVersion).tar.gz"
+                SourceUrl="https://github.com/madcoons/portable-firefox/releases/download/v$(Version)/portable-firefox-linux64-$(FirefoxVersion).tar.gz"
                 DestinationFolder="$(FirefoxCache)"
                 DestinationFileName="portable-firefox-linux64.tar.gz">
         </DownloadFile>
         <Exec
-                Command="tar -xf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(PublishDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)'"
-                Condition="$([MSBuild]::IsOSPlatform('Linux')) And !Exists('$(PublishDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)/firefox-root')"/>
+                Command="tar -xf '$(FirefoxCache)portable-firefox-linux64.tar.gz' -C '$(PublishDir)portable-firefox-$(Version)'"
+                Condition="$([MSBuild]::IsOSPlatform('Linux')) And !Exists('$(PublishDir)portable-firefox-$(Version)/firefox-root')"/>
         <!-- MacOS-->
         <DownloadFile
                 Condition="$([MSBuild]::IsOSPlatform('OSX'))"
-                SourceUrl="https://github.com/madcoons/portable-firefox/releases/download/v$(FirefoxVersion)$(VersionSuffix)/portable-firefox-macos-$(FirefoxVersion).tar.gz"
+                SourceUrl="https://github.com/madcoons/portable-firefox/releases/download/v$(Version)/portable-firefox-macos-$(FirefoxVersion).tar.gz"
                 DestinationFolder="$(FirefoxCache)"
                 DestinationFileName="portable-firefox-macos.tar.gz">
         </DownloadFile>
         <Exec
-                Command="tar -xf '$(FirefoxCache)portable-firefox-macos.tar.gz' -C '$(PublishDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)'"
-                Condition="$([MSBuild]::IsOSPlatform('OSX')) And !Exists('$(PublishDir)portable-firefox-$(FirefoxVersion)$(VersionSuffix)/Firefox.app')"/>
+                Command="tar -xf '$(FirefoxCache)portable-firefox-macos.tar.gz' -C '$(PublishDir)portable-firefox-$(Version)'"
+                Condition="$([MSBuild]::IsOSPlatform('OSX')) And !Exists('$(PublishDir)portable-firefox-$(Version)/Firefox.app')"/>
     </Target>
 </Project>

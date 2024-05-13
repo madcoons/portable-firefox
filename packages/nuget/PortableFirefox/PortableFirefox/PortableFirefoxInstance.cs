@@ -7,7 +7,7 @@ public partial class PortableFirefoxInstance
     public static string GeckoDriverDir => Path.Join(AbsoluteRootPath, BinSubDir);
 
     private static string AbsoluteRootPath
-        => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "portable-firefox-" + VERSION + VERSION_SUFFIX);
+        => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "portable-firefox-" + NUGET_PACKAGE_VERSION);
 
     private static string BinSubDir
         => OperatingSystem.IsLinux()
