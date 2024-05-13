@@ -43,5 +43,5 @@ async Task SetOutputAsync(string key, string value)
         return;
     }
 
-    await File.AppendAllTextAsync(githubOutputFile, $"{key}={value}");
+    await File.AppendAllLinesAsync(githubOutputFile, [$"{key}={value}"]);
 }

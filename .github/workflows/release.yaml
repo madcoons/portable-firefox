@@ -11,6 +11,7 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
           FIREFOX_VERSION: ${{ steps.versions.outputs.FIREFOX_VERSION }}
+          NUGET_PACKAGE_VERSION: ${{ steps.versions.outputs.NUGET_PACKAGE_VERSION }}
         steps:
         - uses: actions/checkout@v3.5.3
     
