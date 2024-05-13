@@ -26,13 +26,27 @@ jobs:
           env:
             PATCH_VERSION_SUFFIX: '12'
 
+    VerifyTagExists:
+        needs:
+        - GetLatestVersions
+        runs-on: ubuntu-latest
+        outputs:
+          exists: ${{ steps.checkReleaseExists.outputs.exists }}
+        env:
+          NUGET_PACKAGE_VERSION: ${{ needs.GetLatestVersions.outputs.NUGET_PACKAGE_VERSION }}
+        steps:
+        - uses: mukunku/tag-exists-action@v1.3.0
+          id: checkReleaseExists
+          with: 
+            tag: v${{ env.NUGET_PACKAGE_VERSION }}
+
     Archive-OSX:
         needs:
         - GetLatestVersions
+        - VerifyTagExists
         runs-on: macos-latest
         env:
           FIREFOX_VERSION: ${{ needs.GetLatestVersions.outputs.FIREFOX_VERSION }}
-          NUGET_PACKAGE_VERSION: ${{ needs.GetLatestVersions.outputs.NUGET_PACKAGE_VERSION }}
         steps:
         - uses: actions/checkout@v3.5.3
 
@@ -43,7 +57,31 @@ jobs:
           uses: actions/upload-artifact@v4
           with:
             name: portable-firefox-macos
-            path: tmp/firefox.tar.gz
+            path: tmp/portable-firefox-macos-${{ env.FIREFOX_VERSION }}.tar.gz
+
+    Archive-Linux64:
+        needs:
+        - GetLatestVersions
+        - VerifyTagExists
+        runs-on: ubuntu-latest
+        env:
+          FIREFOX_VERSION: ${{ needs.GetLatestVersions.outputs.FIREFOX_VERSION }}
+        steps:
+        - uses: actions/checkout@v3.5.3
+
+        - name: Build archive
+          run: |
+            set -e
+
+            docker build . -f Dockerfile.BuildLinux -t portable-firefox-linux64:latest
+            docker create --name portable-firefox-linux64 portable-firefox-linux64:latest
+            docker cp portable-firefox-linux64:/firefox.tar.gz portable-firefox-linux64-${FIREFOX_VERSION}.tar.gz
+
+        - name: Upload Artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: portable-firefox-linux64
+            path: portable-firefox-linux64-${{ env.FIREFOX_VERSION }}.tar.gz
 
     Release:
         needs:
@@ -51,6 +89,7 @@ jobs:
         runs-on: ubuntu-latest
         concurrency: release
         steps:
+        - run: exit 1
         - uses: actions/checkout@v3.5.3
 
         - name: Generate version suffix
