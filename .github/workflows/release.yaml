@@ -18,6 +18,7 @@ jobs:
             dotnet-version: '8.x'
     
         - name: Run Version Manager
+          id: versions
           run: dotnet run -c Release --project packages/nuget/PortableFirefox/PortableFirefox.VersionManager
           env:
             PATCH_VERSION_SUFFIX: '12'
@@ -30,7 +31,9 @@ jobs:
         - uses: actions/checkout@v3.5.3
 
         - name: Build Archive
-          run: ./BuildOSX.sh
+          run: ./BuildOSX.sh && exit 1
+          env:
+            FIREFOX_VERSION: ${{ needs.GetLatestVersions.steps.versions.output.FIREFOX_VERSION }}
 
         - name: Upload Artifact
           uses: actions/upload-artifact@v4
