@@ -27,7 +27,7 @@ jobs:
           id: versions
           run: dotnet run -c Release --project packages/nuget/PortableFirefox/PortableFirefox.VersionManager
           env:
-            PATCH_VERSION_SUFFIX: '12'
+            PATCH_VERSION_SUFFIX: '13'
 
     VerifyTagExists:
         needs:
@@ -110,6 +110,8 @@ jobs:
             name: portable-firefox-linux64
             path: portable-firefox-linux64
 
+        - run: gh release create --help && exit 1
+
         - uses: "marvinpinto/action-automatic-releases@v1.2.1"
           with:
             title: Firefox v${{ env.NUGET_PACKAGE_VERSION }}
@@ -120,8 +122,6 @@ jobs:
               portable-firefox-macos/portable-firefox-macos-${{ env.FIREFOX_VERSION }}.tar.gz
               portable-firefox-linux64/portable-firefox-linux64-${{ env.FIREFOX_VERSION }}.tar.gz
             repo_token: "${{ secrets.GITHUB_TOKEN }}"
-
-        - run: gh release create --help && exit 1
 
         - name: Replace Versions
           run: |
