@@ -110,18 +110,22 @@ jobs:
             name: portable-firefox-linux64
             path: portable-firefox-linux64
 
-        - run: gh release create --help && exit 1
-
-        - uses: "marvinpinto/action-automatic-releases@v1.2.1"
-          with:
-            title: Firefox v${{ env.NUGET_PACKAGE_VERSION }}
-            automatic_release_tag: v${{ env.NUGET_PACKAGE_VERSION }}
-            prerelease: false
-            draft: false 
-            files: |
-              portable-firefox-macos/portable-firefox-macos-${{ env.FIREFOX_VERSION }}.tar.gz
+        - run: |
+            set -e
+            gh create release v${{ env.NUGET_PACKAGE_VERSION }} --title "Firefox v${{ env.NUGET_PACKAGE_VERSION }}" \
+              portable-firefox-macos/portable-firefox-macos-${{ env.FIREFOX_VERSION }}.tar.gz \
               portable-firefox-linux64/portable-firefox-linux64-${{ env.FIREFOX_VERSION }}.tar.gz
-            repo_token: "${{ secrets.GITHUB_TOKEN }}"
+
+        # - uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        #   with:
+        #     title: Firefox v${{ env.NUGET_PACKAGE_VERSION }}
+        #     automatic_release_tag: v${{ env.NUGET_PACKAGE_VERSION }}
+        #     prerelease: false
+        #     draft: false 
+        #     files: |
+        #       portable-firefox-macos/portable-firefox-macos-${{ env.FIREFOX_VERSION }}.tar.gz
+        #       portable-firefox-linux64/portable-firefox-linux64-${{ env.FIREFOX_VERSION }}.tar.gz
+        #     repo_token: "${{ secrets.GITHUB_TOKEN }}"
 
         - name: Replace Versions
           run: |
