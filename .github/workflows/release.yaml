@@ -112,9 +112,11 @@ jobs:
 
         - run: |
             set -e
-            gh create release v${{ env.NUGET_PACKAGE_VERSION }} --title "Firefox v${{ env.NUGET_PACKAGE_VERSION }}" \
+            gh release create v${{ env.NUGET_PACKAGE_VERSION }} --title "Firefox v${{ env.NUGET_PACKAGE_VERSION }}" \
               portable-firefox-macos/portable-firefox-macos-${{ env.FIREFOX_VERSION }}.tar.gz \
               portable-firefox-linux64/portable-firefox-linux64-${{ env.FIREFOX_VERSION }}.tar.gz
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         # - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         #   with:
