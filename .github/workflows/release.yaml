@@ -6,6 +6,9 @@ on:
     branches:
       - "main"
   workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 jobs:
     GetLatestVersions:
         runs-on: ubuntu-latest
@@ -87,53 +90,38 @@ jobs:
 
     Release:
         needs:
+        - GetLatestVersions
         - Archive-OSX
         - Archive-Linux64
         runs-on: ubuntu-latest
-        concurrency: release
+        env:
+          FIREFOX_VERSION: ${{ needs.GetLatestVersions.outputs.FIREFOX_VERSION }}
+          NUGET_PACKAGE_VERSION: ${{ needs.GetLatestVersions.outputs.NUGET_PACKAGE_VERSION }}
         steps:
-        - run: exit 1
         - uses: actions/checkout@v3.5.3
-
-        - name: Generate version suffix
-          run: echo "VERSION_SUFFIX=.12" >> $GITHUB_ENV
-
-        - name: Build archives
-          run: |
-            set -e
-
-            docker build . -f Dockerfile.BuildLinux -t portable-firefox-linux64:latest
-            VERSION=$(docker run --rm portable-firefox-linux64:latest --version)
-            VERSION_NUMBER=$(echo ${VERSION} | sed 's/Mozilla Firefox //g' | sed 's/\r//')
-            echo "VERSION_NUMBER=${VERSION_NUMBER}" >> $GITHUB_ENV
-
-            docker create --name portable-firefox-linux64 portable-firefox-linux64:latest
-            docker cp portable-firefox-linux64:/firefox.tar.gz portable-firefox-linux64-${VERSION_NUMBER}.tar.gz
 
         - uses: actions/download-artifact@v4
           with:
             name: portable-firefox-macos
             path: portable-firefox-macos
 
-        - name: Rename firefox.tar.gz with version
-          run: mv portable-firefox-macos/firefox.tar.gz portable-firefox-macos-${{ env.VERSION_NUMBER }}.tar.gz
-
-        - uses: mukunku/tag-exists-action@v1.3.0
-          id: checkReleaseExists
-          with: 
-            tag: v${{ env.VERSION_NUMBER }}${{ env.VERSION_SUFFIX }}
+        - uses: actions/download-artifact@v4
+          with:
+            name: portable-firefox-linux64
+            path: portable-firefox-linux64
 
         - uses: "marvinpinto/action-automatic-releases@v1.2.1"
-          if: steps.checkReleaseExists.outputs.exists == 'false'
           with:
             title: Firefox v${{ env.VERSION_NUMBER }}${{ env.VERSION_SUFFIX }}
             automatic_release_tag: v${{ env.VERSION_NUMBER }}${{ env.VERSION_SUFFIX }}
             prerelease: false
             draft: false 
             files: |
-              portable-firefox-linux64-${{ env.VERSION_NUMBER }}.tar.gz
-              portable-firefox-macos-${{ env.VERSION_NUMBER }}.tar.gz
+              portable-firefox-macos/portable-firefox-macos-${{ env.VERSION_NUMBER }}.tar.gz
+              portable-firefox-linux64/portable-firefox-linux64-${{ env.VERSION_NUMBER }}.tar.gz
             repo_token: "${{ secrets.GITHUB_TOKEN }}"
+
+        - run: exit 1
 
         - name: Replace FirefoxVersion
           if: steps.checkReleaseExists.outputs.exists == 'false'
