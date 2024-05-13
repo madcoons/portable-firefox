@@ -27,7 +27,7 @@ jobs:
           id: versions
           run: dotnet run -c Release --project packages/nuget/PortableFirefox/PortableFirefox.VersionManager
           env:
-            PATCH_VERSION_SUFFIX: '14'
+            PATCH_VERSION_SUFFIX: '15'
 
     VerifyTagExists:
         needs:
@@ -121,6 +121,7 @@ jobs:
         - name: Replace Version
           run: |
             set -e
+            sed 's/$(FirefoxVersion)/${{ env.FIREFOX_VERSION }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/build/PortableFirefox.targets
             sed 's/$(Version)/${{ env.NUGET_PACKAGE_VERSION }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/build/PortableFirefox.targets
 
         - name: Setup .NET
