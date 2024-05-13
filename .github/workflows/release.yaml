@@ -121,8 +121,6 @@ jobs:
               portable-firefox-linux64/portable-firefox-linux64-${{ env.FIREFOX_VERSION }}.tar.gz
             repo_token: "${{ secrets.GITHUB_TOKEN }}"
 
-        - run: exit 1
-
         - name: Replace Versions
           run: |
             set -e
