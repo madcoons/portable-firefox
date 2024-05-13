@@ -18,7 +18,7 @@ jobs:
             dotnet-version: '8.x'
     
         - name: Run Version Manager
-          run: dotnet run -c Release packages/nuget/PortableFirefox/PortableFirefox.VersionManager
+          run: dotnet run -c Release --project packages/nuget/PortableFirefox/PortableFirefox.VersionManager
           env:
             PATCH_VERSION_SUFFIX: '12'
 
