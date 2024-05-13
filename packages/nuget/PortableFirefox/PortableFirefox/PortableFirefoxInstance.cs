@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 namespace PortableFirefox;
 
 public partial class PortableFirefoxInstance
@@ -12,16 +10,16 @@ public partial class PortableFirefoxInstance
         => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "portable-firefox-" + VERSION + VERSION_SUFFIX);
 
     private static string BinSubDir
-        => RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+        => OperatingSystem.IsLinux()
             ? Path.Join("firefox-root", "firefox-app")
-            : RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+            : OperatingSystem.IsMacOS()
                 ? Path.Join("Firefox.app", "Contents", "MacOS")
                 : throw new("Unsupported platform.");
 
     private static string FirefoxBinName
-        => RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+        => OperatingSystem.IsLinux()
             ? "firefox.run"
-            : RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+            : OperatingSystem.IsMacOS()
                 ? "firefox"
                 : throw new("Unsupported platform.");
 }
