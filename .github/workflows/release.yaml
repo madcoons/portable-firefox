@@ -27,7 +27,7 @@ jobs:
           id: versions
           run: dotnet run -c Release --project packages/nuget/PortableFirefox/PortableFirefox.VersionManager
           env:
-            PATCH_VERSION_SUFFIX: '13'
+            PATCH_VERSION_SUFFIX: '14'
 
     VerifyTagExists:
         needs:
@@ -118,21 +118,9 @@ jobs:
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        # - uses: "marvinpinto/action-automatic-releases@v1.2.1"
-        #   with:
-        #     title: Firefox v${{ env.NUGET_PACKAGE_VERSION }}
-        #     automatic_release_tag: v${{ env.NUGET_PACKAGE_VERSION }}
-        #     prerelease: false
-        #     draft: false 
-        #     files: |
-        #       portable-firefox-macos/portable-firefox-macos-${{ env.FIREFOX_VERSION }}.tar.gz
-        #       portable-firefox-linux64/portable-firefox-linux64-${{ env.FIREFOX_VERSION }}.tar.gz
-        #     repo_token: "${{ secrets.GITHUB_TOKEN }}"
-
-        - name: Replace Versions
+        - name: Replace Version
           run: |
             set -e
-            sed 's/$(FirefoxVersion)/${{ env.FIREFOX_VERSION }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/PortableFirefox.csproj
             sed 's/$(Version)/${{ env.NUGET_PACKAGE_VERSION }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/build/PortableFirefox.targets
 
         - name: Setup .NET
@@ -142,7 +130,7 @@ jobs:
 
         - name: Pack
           working-directory: packages/nuget/PortableFirefox
-          run: dotnet pack PortableFirefox --configuration Release
+          run: dotnet pack PortableFirefox --configuration Release /p:Version=${{ env.NUGET_PACKAGE_VERSION }} /p:FirefoxVersion=${{ env.FIREFOX_VERSION }}
 
         - name: Publish nuget
           working-directory: packages/nuget/PortableFirefox
