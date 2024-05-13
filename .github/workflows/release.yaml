@@ -9,6 +9,8 @@ on:
 jobs:
     GetLatestVersions:
         runs-on: ubuntu-latest
+        outputs:
+          FIREFOX_VERSION: ${{ steps.versions.outputs.FIREFOX_VERSION }}
         steps:
         - uses: actions/checkout@v3.5.3
     
@@ -27,13 +29,15 @@ jobs:
         needs:
         - GetLatestVersions
         runs-on: macos-latest
+        # env:
+        #   FIREFOX_VERSION: ${{ needs.GetLatestVersions.outputs.FIREFOX_VERSION }}
         steps:
         - uses: actions/checkout@v3.5.3
 
         - name: Build Archive
           run: ./BuildOSX.sh && exit 1
           env:
-            FIREFOX_VERSION: ${{ needs.GetLatestVersions.steps.versions.outputs.FIREFOX_VERSION }}
+            FIREFOX_VERSION: ${{ needs.GetLatestVersions.outputs.FIREFOX_VERSION }}
 
         - name: Upload Artifact
           uses: actions/upload-artifact@v4
