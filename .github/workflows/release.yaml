@@ -112,43 +112,32 @@ jobs:
 
         - uses: "marvinpinto/action-automatic-releases@v1.2.1"
           with:
-            title: Firefox v${{ env.VERSION_NUMBER }}${{ env.VERSION_SUFFIX }}
-            automatic_release_tag: v${{ env.VERSION_NUMBER }}${{ env.VERSION_SUFFIX }}
+            title: Firefox v${{ env.NUGET_PACKAGE_VERSION }}
+            automatic_release_tag: v${{ env.NUGET_PACKAGE_VERSION }}
             prerelease: false
             draft: false 
             files: |
-              portable-firefox-macos/portable-firefox-macos-${{ env.VERSION_NUMBER }}.tar.gz
-              portable-firefox-linux64/portable-firefox-linux64-${{ env.VERSION_NUMBER }}.tar.gz
+              portable-firefox-macos/portable-firefox-macos-${{ env.FIREFOX_VERSION }}.tar.gz
+              portable-firefox-linux64/portable-firefox-linux64-${{ env.FIREFOX_VERSION }}.tar.gz
             repo_token: "${{ secrets.GITHUB_TOKEN }}"
 
         - run: exit 1
 
-        - name: Replace FirefoxVersion
-          if: steps.checkReleaseExists.outputs.exists == 'false'
+        - name: Replace Versions
           run: |
             set -e
-            sed 's/$(FirefoxVersion)/${{ env.VERSION_NUMBER }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/PortableFirefox.csproj
-            sed 's/$(FirefoxVersion)/${{ env.VERSION_NUMBER }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/build/PortableFirefox.targets
+            sed 's/$(FirefoxVersion)/${{ env.FIREFOX_VERSION }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/PortableFirefox.csproj
+            sed 's/$(Version)/${{ env.NUGET_PACKAGE_VERSION }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/build/PortableFirefox.targets
 
-        - name: Replace VersionSuffix
-          if: steps.checkReleaseExists.outputs.exists == 'false'
-          run: |
-            set -e
-            sed 's/$(VersionSuffix)/${{ env.VERSION_SUFFIX }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/PortableFirefox.csproj
-            sed 's/$(VersionSuffix)/${{ env.VERSION_SUFFIX }}/g' -i packages/nuget/PortableFirefox/PortableFirefox/build/PortableFirefox.targets
-    
         - name: Setup .NET
-          if: steps.checkReleaseExists.outputs.exists == 'false'
           uses: actions/setup-dotnet@v3
           with:
-            dotnet-version: 7.0.x
+            dotnet-version: 6.x
 
         - name: Pack
-          if: steps.checkReleaseExists.outputs.exists == 'false'
           working-directory: packages/nuget/PortableFirefox
           run: dotnet pack PortableFirefox --configuration Release
 
         - name: Publish nuget
-          if: steps.checkReleaseExists.outputs.exists == 'false'
           working-directory: packages/nuget/PortableFirefox
           run: dotnet nuget push PortableFirefox/bin/Release/PortableFirefox.*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://www.nuget.org --skip-duplicate
