@@ -15,6 +15,7 @@ jobs:
         outputs:
           FIREFOX_VERSION: ${{ steps.versions.outputs.FIREFOX_VERSION }}
           NUGET_PACKAGE_VERSION: ${{ steps.versions.outputs.NUGET_PACKAGE_VERSION }}
+          GECKODRIVER_VERSION: ${{ steps.versions.outputs.GECKODRIVER_VERSION }}
         steps:
         - uses: actions/checkout@v3.5.3
     
@@ -27,7 +28,7 @@ jobs:
           id: versions
           run: dotnet run -c Release --project packages/nuget/PortableFirefox/PortableFirefox.VersionManager
           env:
-            PATCH_VERSION_SUFFIX: '16'
+            PATCH_VERSION_SUFFIX: '17'
 
     VerifyTagExists:
         needs:
@@ -51,6 +52,7 @@ jobs:
         runs-on: macos-latest
         env:
           FIREFOX_VERSION: ${{ needs.GetLatestVersions.outputs.FIREFOX_VERSION }}
+          GECKODRIVER_VERSION: ${{ needs.GetLatestVersions.outputs.GECKODRIVER_VERSION }}
         steps:
         - uses: actions/checkout@v3.5.3
 
@@ -71,6 +73,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
           FIREFOX_VERSION: ${{ needs.GetLatestVersions.outputs.FIREFOX_VERSION }}
+          GECKODRIVER_VERSION: ${{ needs.GetLatestVersions.outputs.GECKODRIVER_VERSION }}
         steps:
         - uses: actions/checkout@v3.5.3
 
@@ -78,7 +81,7 @@ jobs:
           run: |
             set -e
 
-            docker build . -f Dockerfile.BuildLinux -t portable-firefox-linux64:latest --build-arg FIREFOX_VERSION=${{ env.FIREFOX_VERSION }}
+            docker build . -f Dockerfile.BuildLinux -t portable-firefox-linux64:latest --build-arg FIREFOX_VERSION=${{ env.FIREFOX_VERSION }} --build-arg GECKODRIVER_VERSION=${{ env.GECKODRIVER_VERSION }}
             docker create --name portable-firefox-linux64 portable-firefox-linux64:latest
             docker cp portable-firefox-linux64:/firefox.tar.gz portable-firefox-linux64-${FIREFOX_VERSION}.tar.gz
 

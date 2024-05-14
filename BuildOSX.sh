@@ -8,8 +8,8 @@ mkdir tmp
 trap 'rm -rf tmp' EXIT
 
 curl -L "https://download.mozilla.org/?product=firefox-${FIREFOX_VERSION}-ssl&os=osx&lang=en-US" --create-dirs --output-dir tmp --output "firefox.dmg"
-curl -L "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-macos.tar.gz" --create-dirs --output-dir tmp --output "geckodriver-macos.tar.gz"
-curl -L "https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-macos-aarch64.tar.gz" --create-dirs --output-dir tmp --output "geckodriver-macos-aarch64.tar.gz"
+curl -L "https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-macos.tar.gz" --create-dirs --output-dir tmp --output "geckodriver-macos.tar.gz"
+curl -L "https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-macos-aarch64.tar.gz" --create-dirs --output-dir tmp --output "geckodriver-macos-aarch64.tar.gz"
 
 mkdir tmp/geckodriver-cross-arch
 tar -xvf "tmp/geckodriver-macos.tar.gz" -C tmp/geckodriver-cross-arch
