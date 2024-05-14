@@ -27,7 +27,7 @@ jobs:
           id: versions
           run: dotnet run -c Release --project packages/nuget/PortableFirefox/PortableFirefox.VersionManager
           env:
-            PATCH_VERSION_SUFFIX: '15'
+            PATCH_VERSION_SUFFIX: '16'
 
     VerifyTagExists:
         needs:
@@ -78,7 +78,7 @@ jobs:
           run: |
             set -e
 
-            docker build . -f Dockerfile.BuildLinux -t portable-firefox-linux64:latest
+            docker build . -f Dockerfile.BuildLinux -t portable-firefox-linux64:latest --build-arg FIREFOX_VERSION=${{ env.FIREFOX_VERSION }}
             docker create --name portable-firefox-linux64 portable-firefox-linux64:latest
             docker cp portable-firefox-linux64:/firefox.tar.gz portable-firefox-linux64-${FIREFOX_VERSION}.tar.gz
 
