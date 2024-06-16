@@ -17,7 +17,7 @@ jobs:
           NUGET_PACKAGE_VERSION: ${{ steps.versions.outputs.NUGET_PACKAGE_VERSION }}
           GECKODRIVER_VERSION: ${{ steps.versions.outputs.GECKODRIVER_VERSION }}
         steps:
-        - uses: actions/checkout@v4.1.5
+        - uses: actions/checkout@v4.1.7
     
         - name: Setup .NET
           uses: actions/setup-dotnet@v4
@@ -54,7 +54,7 @@ jobs:
           FIREFOX_VERSION: ${{ needs.GetLatestVersions.outputs.FIREFOX_VERSION }}
           GECKODRIVER_VERSION: ${{ needs.GetLatestVersions.outputs.GECKODRIVER_VERSION }}
         steps:
-        - uses: actions/checkout@v4.1.5
+        - uses: actions/checkout@v4.1.7
 
         - name: Build Archive
           run: ./BuildOSX.sh
@@ -75,7 +75,7 @@ jobs:
           FIREFOX_VERSION: ${{ needs.GetLatestVersions.outputs.FIREFOX_VERSION }}
           GECKODRIVER_VERSION: ${{ needs.GetLatestVersions.outputs.GECKODRIVER_VERSION }}
         steps:
-        - uses: actions/checkout@v4.1.5
+        - uses: actions/checkout@v4.1.7
 
         - name: Build archive
           run: |
@@ -101,7 +101,7 @@ jobs:
           FIREFOX_VERSION: ${{ needs.GetLatestVersions.outputs.FIREFOX_VERSION }}
           NUGET_PACKAGE_VERSION: ${{ needs.GetLatestVersions.outputs.NUGET_PACKAGE_VERSION }}
         steps:
-        - uses: actions/checkout@v4.1.5
+        - uses: actions/checkout@v4.1.7
 
         - uses: actions/download-artifact@v4
           with:
